@@ -21,39 +21,8 @@
     <!-- Wrapper -->
     <div id="wrapper">
 
-        <!-- Header -->
-        <header id="header">
-            <div class="inner">
-
-                <!-- Logo -->
-                <a href="Index" class="logo">
-                    <img src="/Content/images/logo.png" alt="" />
-                </a>
-
-                <!-- Nav -->
-                <nav>
-                    <ul>
-                        <li><a href="#menu">Menu</a></li>
-                    </ul>
-                </nav>
-
-            </div>
-        </header>
-
-        <!-- Menu -->
-        <nav id="menu">
-            <h2>Меню</h2>
-            <ul>
-                <li><a>Галина Андреевна</a></li>
-                <li><a>Баланс: 5000 <span class="icon fa-btc"></span></a></li>
-                <li><a>Выйти</a></li>
-            </ul>
-        </nav>
-
-        <!-- Main -->
-        <div id="main">
+        <!-- Body -->
             @RenderBody()
-        </div>
 
         <!-- Footer -->
         <footer id="footer">
@@ -65,5 +34,10 @@
         </footer>
 
     </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+
 </body>
 </html>
