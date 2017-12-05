@@ -1,44 +1,69 @@
-﻿<!DOCTYPE html>
+﻿<!DOCTYPE HTML>
 <html>
 <head>
+    <title>Аукцион ДельтаКредит</title>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
-    @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!--[if lte IE 8]><script src="Scripts/ie/html5shiv.js"></script><![endif]-->
+    <link rel="stylesheet" href="/Content/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="/Content/css/main.css" />
+    <!--[if lte IE 9]><link rel="stylesheet" href="/Content/css/ie9.css" /><![endif]-->
+    <!--[if lte IE 8]><link rel="stylesheet" href="/Content/css/ie8.css" /><![endif]-->
 
+    <!-- Scripts -->
+    <script src="/Scripts/jquery.min.js"></script>
+    <script src="/Scripts/skel.min.js"></script>
+    <script src="/Scripts/util.js"></script>
+    <!--[if lte IE 8]><script src="/Scripts/ie/respond.min.js"></script><![endif]-->
+    <script src="/Scripts/main.js"></script>
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
-                </ul>
-                @Html.Partial("_LoginPartial")
-            </div>
-        </div>
-    </div>
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-        </footer>
-    </div>
+    <!-- Wrapper -->
+    <div id="wrapper">
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", required: false)
+        <!-- Header -->
+        <header id="header">
+            <div class="inner">
+
+                <!-- Logo -->
+                <a href="Index" class="logo">
+                    <img src="/Content/images/logo.png" alt="" />
+                </a>
+
+                <!-- Nav -->
+                <nav>
+                    <ul>
+                        <li><a href="#menu">Menu</a></li>
+                    </ul>
+                </nav>
+
+            </div>
+        </header>
+
+        <!-- Menu -->
+        <nav id="menu">
+            <h2>Меню</h2>
+            <ul>
+                <li><a>Галина Андреевна</a></li>
+                <li><a>Баланс: 5000 <span class="icon fa-btc"></span></a></li>
+                <li><a>Выйти</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main -->
+        <div id="main">
+            @RenderBody()
+        </div>
+
+        <!-- Footer -->
+        <footer id="footer">
+            <div class="inner">
+                <ul class="copyright">
+                    <li>&copy; ДельтаКредит. Все права защищены.</li>
+                </ul>
+            </div>
+        </footer>
+
+    </div>
 </body>
 </html>

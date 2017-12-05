@@ -13,18 +13,16 @@ namespace Auction.Controllers
             return View();
         }
 
-        public ActionResult About()
+        public ActionResult Item(int id = 0)
         {
-            ViewBag.Message = "Your application description page.";
-
             return View();
         }
 
-        public ActionResult Contact()
+        [HttpPost]
+        public ActionResult Item()
         {
-            ViewBag.Message = "Your contact page.";
-
             return View();
         }
+
     }
 }
