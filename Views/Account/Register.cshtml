@@ -23,6 +23,13 @@
                 @Html.ValidationSummary("", new { @class = "text-danger" })
                 @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "E-mail" })
                 @Html.TextBoxFor(m => m.Coints, new { @class = "form-control", placeholder = "Монеты" })
+                @Html.DropDownListFor(m => m.Group, new SelectList(
+                          new List<Object>{
+                               new { value = "Группа 1" , text = "Группа 1" },
+                               new { value = "Группа 2" , text = "Группа 2" }
+                            },
+                          "value",
+                        "text"), new { @class = "form-control" })
                 <div style="margin-top: 8%; text-align: center;">
                     <input type="submit" class="button special" value="Зарегистрироваться" />
                 </div>

@@ -156,7 +156,7 @@ namespace Auction.Controllers
                 Random rnd = new Random();
                 string writePath = @"C:\Users\Trainee\Desktop\LoginPassword.txt";
                 model.Password = Membership.GeneratePassword(12, 1) + rnd.Next(0,10).ToString();
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Coints = Convert.ToInt32(model.Coints) };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Coints = Convert.ToInt32(model.Coints), Group = model.Group };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {

@@ -2,9 +2,10 @@
 <header id="header">
     <div class="inner">
         <!-- Logo -->
-        <a href="Index" class="logo">
+        <a href="/Home/Index" class="logo">
             <img src="/Content/images/logo.png" alt="" />
         </a>
+        <nav style="right:150px; top: 55px; color:black;">Баланс: @ViewBag.Coints <span class="icon fa-btc"></span></nav>
         <!-- Nav -->
         <nav>
             <ul>
@@ -18,8 +19,8 @@
 <nav id="menu">
     <h2>Меню</h2>
     <ul>
-        <li><a>@User.Identity.Name</a></li>
-        <li><a>Баланс: @ViewBag.Coints <span class="icon fa-btc"></span></a></li>
+        <li>Логин: @User.Identity.Name</li>
+        <li>Баланс: @ViewBag.Coints <span class="icon fa-btc"></span></li>
         <li><a href="/Account/LogOff">Выйти</a></li>
     </ul>
 </nav>
@@ -36,7 +37,7 @@
                     <script src="http://megatimer.ru/s/39ac4279881defe5f43037c562db2f34.js"></script>
                 </span>
             </div>
-            <div class="" style="width: 30%; float: right; margin-top: 1%;" id="bet">
+            <div class="" style="width: 30%; float: right; margin-top: 2%; margin-right:2%;" id="bet">
                 <h2>Текущая ставка:</h2>
                 <h4 style="color: black;">@ViewBag.LastUser</h4>
                 <h4 style="color: black;">@ViewBag.LastBetTime</h4>
@@ -46,6 +47,7 @@
                 @using (Ajax.BeginForm("Item", "Home", new AjaxOptions { UpdateTargetId = "bet" }))
                 {
                     <input name="id" type="hidden" value="@ViewBag.Id"/>
+                    <input name="lastBet" type="hidden" value="@ViewBag.LastBet" />
                     if (ViewBag.LastUser == User.Identity.Name)
                     {
                         <button type="submit" class="button special" disabled>Повысить ставку</button>
@@ -65,3 +67,8 @@
         <p style="text-align:justify;">@ViewBag.Description</p>
     </div>
 </div>
+
+@if(ViewBag.Error != null)
+{
+    <script>alert(@ViewBag.Error)</script>
+}

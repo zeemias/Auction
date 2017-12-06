@@ -2,9 +2,10 @@
 <header id="header">
     <div class="inner">
         <!-- Logo -->
-        <a href="Index" class="logo">
+        <a href="/Home/Index" class="logo">
             <img src="/Content/images/logo.png" alt="" />
         </a>
+        <nav style="right:150px; top: 55px; color:black;">Баланс: @ViewBag.Coints <span class="icon fa-btc"></span></nav>
         <!-- Nav -->
         <nav>
             <ul>
@@ -18,8 +19,8 @@
 <nav id="menu">
     <h2>Меню</h2>
     <ul>
-        <li><a>@User.Identity.Name</a></li>
-        <li><a>Баланс: @ViewBag.Coints <span class="icon fa-btc"></span></a></li>
+        <li>Логин: @User.Identity.Name</li>
+        <li>Баланс: @ViewBag.Coints <span class="icon fa-btc"></span></li>
         <li><a href="/Account/LogOff">Выйти</a></li>
     </ul>
 </nav>
@@ -33,21 +34,25 @@
             <script src="http://megatimer.ru/s/39ac4279881defe5f43037c562db2f34.js"></script>
         </header>
         <section class="tiles">
-            <article class="">
-                <span class="image">
-                    <img src="/Content/images/2hq.jpeg" alt="" />
-                </span>
-                <a href="Item">
-                    <div class="content">
-                        <h2>Кофемашина</h2>
-                        <h3>Nespresso</h3>
-                        <span>Текущая ставка:</span>
-                        <br><span>5000 <span class="icon fa-btc"></span></span>
-                        <br><span>Шаг ставки:</span>
-                        <br><span>100 <span class="icon fa-btc"></span></span>
-                    </div>
-                </a>
-            </article>
+            @foreach (var item in ViewBag.Items)
+            {
+
+                <article class="">
+                    <span class="image">
+                        <img src="@item.Image" alt="" />
+                    </span>
+                    <a href="/Home/Item/@item.Id">
+                        <div class="content">
+                            <h2>@item.Name</h2>
+                            <span>Текущая ставка:</span>
+                            <br><span>@item.LastBet <span class="icon fa-btc"></span></span>
+                            <br><span>Шаг ставки:</span>
+                            <br><span>@item.Step <span class="icon fa-btc"></span></span>
+                        </div>
+                    </a>
+                </article>
+
+            }
         </section>
     </div>
 </div>

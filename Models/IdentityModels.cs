@@ -11,6 +11,7 @@ namespace Auction.Models
     public class ApplicationUser : IdentityUser
     {
         public int Coints { get; set; }
+        public string Group { get; set; }
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
@@ -31,6 +32,7 @@ namespace Auction.Models
         public int Step { get; set; }
         public int LastBet { get; set; }
         public string LastUser { get; set; }
+        public string Group { get; set; }
         public DateTime LastBetTime { get; set; }
         public DateTime TimeOut { get; set; } 
     }

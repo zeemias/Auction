@@ -73,6 +73,10 @@ namespace Auction.Models
         [Display(Name = "Coints")]
         public int Coints { get; set; }
 
+        [Required]
+        [Display(Name = "Group")]
+        public string Group { get; set; }
+
         [Display(Name = "Password")]
         public string Password { get; set; }
     }
