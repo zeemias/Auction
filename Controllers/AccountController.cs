@@ -10,6 +10,7 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Auction.Models;
 using System.Web.Security;
+using System.IO;
 
 namespace Auction.Controllers
 {
@@ -152,11 +153,17 @@ namespace Auction.Controllers
         {
             if (ModelState.IsValid)
             {
-                model.Password = Membership.GeneratePassword(12, 1);
+                Random rnd = new Random();
+                string writePath = @"C:\Users\Trainee\Desktop\LoginPassword.txt";
+                model.Password = Membership.GeneratePassword(12, 1) + rnd.Next(0,10).ToString();
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Coints = Convert.ToInt32(model.Coints) };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+                    using (StreamWriter sw = new StreamWriter(writePath, true, System.Text.Encoding.Default))
+                    {
+                        sw.WriteLine(model.Email+":"+ model.Password);
+                    }
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
 
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
@@ -387,13 +394,21 @@ namespace Auction.Controllers
         }
 
         //
-        // POST: /Account/LogOff
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        // Get: /Account/LogOff
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login", "Account");
+        }
+
+        //
+        // POST: /Account/LogOff
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult LogOff(string a)
+        {
+            AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+            return RedirectToAction("Login", "Account");
         }
 
         //

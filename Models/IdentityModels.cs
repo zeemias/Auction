@@ -26,10 +26,11 @@ namespace Auction.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public string Image { get; set; }
         public int DefaultBet { get; set; }
         public int Step { get; set; }
         public int LastBet { get; set; }
-        public string LastUserId { get; set; }
+        public string LastUser { get; set; }
         public DateTime LastBetTime { get; set; }
         public DateTime TimeOut { get; set; } 
     }

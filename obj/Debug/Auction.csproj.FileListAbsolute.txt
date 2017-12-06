@@ -72,3 +72,4 @@ C:\Users\Trainee\Desktop\Projects\Auction\Auction\obj\Debug\Auction.pdb
 C:\Users\Trainee\Desktop\Projects\Auction\Auction\obj\Debug\Auction.Migrations.InitialCreate.resources
 C:\Users\Trainee\Desktop\Projects\Auction\Auction\obj\Debug\Auction.csproj.GenerateResource.Cache
 C:\Users\Trainee\Desktop\Projects\Auction\Auction\obj\Debug\Auction.Migrations.DataMigration.resources
+C:\Users\Trainee\Desktop\Projects\Auction\Auction\obj\Debug\Auction.Migrations.DataMigration1.resources
