@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using System.Web;
 using System.Web.Mvc;
 
@@ -81,6 +83,7 @@ namespace Auction.Controllers
                     db.Entry(user).State = EntityState.Modified;
                     db.Entry(item).State = EntityState.Modified;
                     db.SaveChanges();
+                    SendEmailAsync(user.Email, "Аукцион ДельтаКредит", "Ваша ставка на " + item.Name + " была повышена другим пользователем.");
                 }
                 ViewBag.Coints = user.Coints;
                 ViewBag.Name = item.Name;
@@ -92,6 +95,29 @@ namespace Auction.Controllers
                 ViewBag.Step = item.Step;
             }
             return View();
+        }
+
+        public void SendEmailAsync(string GetEmail, string mailSubject, string mailBody)
+        {
+            try
+            {
+                MailMessage mail = new MailMessage();
+                mail.From = new MailAddress("DeltaCreditBot@yandex.ru");
+                mail.To.Add(GetEmail);
+                mail.Subject = mailSubject;
+                mail.Body = mailBody;
+                mail.IsBodyHtml = true;
+
+                using (SmtpClient smtp = new SmtpClient("smtp.yandex.ru", 25))
+                {
+                    smtp.Credentials = new NetworkCredential("DeltaCreditBot@yandex.ru", "");
+                    smtp.EnableSsl = true;
+                    smtp.Send(mail);
+                }
+            }
+            catch
+            {
+            }
         }
 
     }
