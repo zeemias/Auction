@@ -45,7 +45,14 @@
                         <div class="content">
                             <h2>@item.Name</h2>
                             <span>Текущая ставка:</span>
-                            <br><span>@item.LastBet <span class="icon fa-btc"></span></span>
+                             @if (item.DefaultBet >= item.LastBet)
+                             {
+                                <br><span>@item.DefaultBet <span class="icon fa-btc"></span></span>
+                             }
+                             else
+                             {
+                                <br><span>@item.LastBet <span class="icon fa-btc"></span></span>
+                             }
                             <br><span>Шаг ставки:</span>
                             <br><span>@item.Step <span class="icon fa-btc"></span></span>
                         </div>

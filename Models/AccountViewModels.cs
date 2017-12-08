@@ -48,17 +48,17 @@ namespace Auction.Models
 
     public class LoginViewModel
     {
-        [Required]
-        [Display(Name = "Email")]
-        [EmailAddress]
+        [Required(ErrorMessage = "Поле обязательно для заполнения")]
+        [Display(Name = "E-mail")]
+        [EmailAddress(ErrorMessage = "Неправильный формат логина")]
         public string Email { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Поле обязательно для заполнения")]
         [DataType(DataType.Password)]
-        [Display(Name = "Password")]
+        [Display(Name = "Пароль")]
         public string Password { get; set; }
 
-        [Display(Name = "Remember me?")]
+        [Display(Name = "Запомнить меня")]
         public bool RememberMe { get; set; }
     }
 
