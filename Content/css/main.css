@@ -3358,3 +3358,7 @@ h1{
   display: table;
   clear: both;
 }
+
+.text-danger {
+    color: #a94442;
+}

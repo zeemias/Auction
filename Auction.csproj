@@ -315,6 +315,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Register\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

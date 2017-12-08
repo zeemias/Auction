@@ -1,5 +1,4 @@
-﻿@model Auction.Models.RegisterViewModel
-<!-- Header -->
+﻿<!-- Header -->
 <header id="header">
     <div class="inner">
         <!-- Logo -->
@@ -15,30 +14,85 @@
             <h1>Аукцион ДельтаКредит</h1>
             <h3>Регистрация</h3>
         </header>
-
-        @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-        {
-            <div style="width: 50%; margin: 0 auto;">
+        <div style="width: 50%; margin: 0 auto;">
+            <h2>Группа 1</h2>
+            <input type="file" name="uploadGroup1" id="uploadGroup1" />
+            <button id="submitGroup1" class="button special">Загрузить</button>
+            <h2>Группа 2</h2>
+            <input type="file" name="uploadGroup2" id="uploadGroup2" />
+            <button id="submitGroup2" class="button special">Загрузить</button>
+            @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+            {
                 @Html.AntiForgeryToken()
-                @Html.ValidationSummary("", new { @class = "text-danger" })
-                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "E-mail" })
-                @Html.TextBoxFor(m => m.Coints, new { @class = "form-control", placeholder = "Монеты" })
-                @Html.DropDownListFor(m => m.Group, new SelectList(
-                          new List<Object>{
-                               new { value = "Группа 1" , text = "Группа 1" },
-                               new { value = "Группа 2" , text = "Группа 2" }
-                            },
-                          "value",
-                        "text"), new { @class = "form-control" })
+                <input type="text" name="Group1" id="Group1" />
+                <input type="text" name="Group2" id="Group2" />
                 <div style="margin-top: 8%; text-align: center;">
-                    <input type="submit" class="button special" value="Зарегистрироваться" />
+                    <input type="submit" class="button special" value="Зарегистрировать" />
                 </div>
-            </div>
-        }
-
-        @section Scripts {
-            @Scripts.Render("~/bundles/jqueryval")
-        }
-
+            }
+        </div>
     </div>
 </div>
+
+<script>
+    $('#submitGroup1').on('click', function (e) {
+        e.preventDefault();
+        var files = document.getElementById('uploadGroup1').files;
+        if (files.length > 0) {
+            if (window.FormData !== undefined) {
+                var data = new FormData();
+                for (var x = 0; x < files.length; x++) {
+                    data.append("file" + x, files[x]);
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("UploadGroup", "Account")',
+                    contentType: false,
+                    processData: false,
+                    data: data,
+                    success: function (result) {
+                        alert("Группа загружена!");
+                        $('#Group1').val(result);
+                    },
+                    error: function (xhr, status, p3) {
+                        alert(xhr.responseText);
+                    }
+                });
+            } else {
+                alert("Браузер не поддерживает загрузку файлов HTML5!");
+            }
+        }
+    });
+
+    $('#submitGroup2').on('click', function (e) {
+        e.preventDefault();
+        var files = document.getElementById('uploadGroup2').files;
+        if (files.length > 0) {
+            if (window.FormData !== undefined) {
+                var data = new FormData();
+                for (var x = 0; x < files.length; x++) {
+                    data.append("file" + x, files[x]);
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("UploadGroup", "Account")',
+                    contentType: false,
+                    processData: false,
+                    data: data,
+                    success: function (result) {
+                        alert("Группа загружена!");
+                        $('#Group2').val(result);
+                    },
+                    error: function (xhr, status, p3) {
+                        alert(xhr.responseText);
+                    }
+                });
+            } else {
+                alert("Браузер не поддерживает загрузку файлов HTML5!");
+            }
+        }
+    });
+
+</script>

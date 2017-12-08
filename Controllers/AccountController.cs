@@ -11,6 +11,7 @@ using Microsoft.Owin.Security;
 using Auction.Models;
 using System.Web.Security;
 using System.IO;
+using System.Text;
 
 namespace Auction.Controllers
 {
@@ -138,21 +139,40 @@ namespace Auction.Controllers
 
         //
         // GET: /Account/Register
-        [AllowAnonymous]
+        [Authorize]
         public ActionResult Register()
         {
+            if(User.Identity.Name != "DeltaCreditBot@yandex.ru")
+            {
+                return RedirectToAction("Index", "Home");
+            }
             return View();
         }
 
         //
         // POST: /Account/Register
         [HttpPost]
-        [AllowAnonymous]
+        [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(RegisterViewModel model)
+        public async Task<ActionResult> Register(string a)
         {
+            if (User.Identity.Name != "DeltaCreditBot@yandex.ru")
+            {
+                return RedirectToAction("Index", "Home");
+            }
             if (ModelState.IsValid)
             {
+                string pathGroup1 = Request["Group1"];
+                string pathGroup2 = Request["Group2"];
+                if(pathGroup1 != null)
+                {
+
+                }
+                if (pathGroup2 != null)
+                {
+
+                }
+                /*
                 Random rnd = new Random();
                 string writePath = @"C:\Users\Trainee\Desktop\LoginPassword.txt";
                 model.Password = Membership.GeneratePassword(12, 1) + rnd.Next(0,10).ToString();
@@ -165,19 +185,29 @@ namespace Auction.Controllers
                         sw.WriteLine(model.Email+":"+ model.Password);
                     }
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-
-                    // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
-                    // Send an email with this link
-                    // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                    // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
                     return View();
                 }
-                AddErrors(result);
+                AddErrors(result);*/
             }
 
-            // If we got this far, something failed, redisplay form
-            return View(model);
+            return View();
+        }
+
+        private string photoPath;
+
+        public JsonResult UploadGroup()
+        {
+            foreach (string file in Request.Files)
+            {
+                var upload = Request.Files[file];
+                if (upload != null)
+                {
+                    string fileName = "/Register/" + System.IO.Path.GetFileName(upload.FileName);
+                    upload.SaveAs(Server.MapPath(fileName));
+                    photoPath = fileName;
+                }
+            }
+            return Json(photoPath);
         }
 
         //
