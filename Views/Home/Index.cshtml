@@ -5,7 +5,7 @@
         <a href="/Home/Index" class="logo">
             <img src="/Content/images/logo.png" alt="" />
         </a>
-        <nav style="right:150px; top: 55px; color:black;">Баланс: @ViewBag.Coints <span class="icon fa-btc"></span></nav>
+        <nav style="right: 120px; top: 50px; color: black;">Баланс: @ViewBag.Coints <span class="icon fa-btc"></span></nav>
         <!-- Nav -->
         <nav>
             <ul>
@@ -28,7 +28,7 @@
 <!-- Main -->
 <div id="main">
     <div class="inner">
-        <header style="text-align: center;">
+        <header class="textcenter">
             <h1>Аукцион ДельтаКредит</h1>
             <h3>До конца аукциона осталось:</h3>
             <script src="http://megatimer.ru/s/39ac4279881defe5f43037c562db2f34.js"></script>
@@ -36,7 +36,6 @@
         <section class="tiles">
             @foreach (var item in ViewBag.Items)
             {
-
                 <article class="">
                     <span class="image">
                         <img src="@item.Image" alt="" />
@@ -58,7 +57,6 @@
                         </div>
                     </a>
                 </article>
-
             }
         </section>
     </div>

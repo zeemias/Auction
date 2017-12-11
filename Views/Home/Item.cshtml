@@ -5,15 +5,28 @@
         <a href="/Home/Index" class="logo">
             <img src="/Content/images/logo.png" alt="" />
         </a>
-        <nav style="right:150px; top: 55px; color:black;">Баланс: @ViewBag.Coints <span class="icon fa-btc"></span></nav>
+        <nav style="right: 120px; top: 50px; color: black;">Баланс: @ViewBag.Coints <span class="icon fa-btc"></span></nav>
         <!-- Nav -->
-        <nav>
+        <nav style="z-index:2;">
             <ul>
                 <li><a href="#menu">Menu</a></li>
             </ul>
         </nav>
     </div>
 </header>
+
+<!-- Modal -->
+<div id="modal_form">
+    <h1>История ставок</h1>
+    <textarea rows="9" class="area" disabled>
+       @foreach(var story in ViewBag.Stories)
+       {
+           string st = story.Time + " - " + story.User + " - " + story.NewBet + "\n";
+           @st
+       } 
+    </textarea>
+</div>
+<div id="overlay"></div>
 
 <!-- Menu -->
 <nav id="menu">
@@ -27,20 +40,20 @@
 
 <!-- Main -->
 <div id="main">
-    <div class="inner" style="text-align: center;">
+    <div class="inner textcenter">
         <h1>@ViewBag.Name</h1>
-        <div class="" style="display: inline-block; width: 100%;">
-            <div class="" style="width: 60%; float: left;">
+        <div class="inline">
+            <div class="fleft">
                 <span class="image main">
                     <img src="@ViewBag.Image" alt="" />
                     <h3>До конца аукциона осталось:</h3>
                     <script src="http://megatimer.ru/s/39ac4279881defe5f43037c562db2f34.js"></script>
                 </span>
             </div>
-            <div class="" style="width: 30%; float: right; margin-top: 2%; margin-right:2%;" id="bet">
+            <div id="bet">
                 <h2>Текущая ставка:</h2>
-                <h4 style="color: black;">@ViewBag.LastUser</h4>
-                <h4 style="color: black;">@ViewBag.LastBetTime</h4>
+                <h4>@ViewBag.LastUser</h4>
+                <h4>@ViewBag.LastBetTime</h4>
                 <h1>@ViewBag.LastBet <span class="icon fa-btc"></span></h1>
                 <h2>Шаг ставки:</h2>
                 <h1>@ViewBag.Step <span class="icon fa-btc"></span></h1>
@@ -60,15 +73,37 @@
                     {
                         <button class="button special" disabled>Недостаточно монет</button>
                     }
-
+                    <h4 id="history">История ставок</h4>
                 }
             </div>
         </div>
-        <p style="text-align:justify;">@ViewBag.Description</p>
+        <p class="descr">@ViewBag.Description</p>
     </div>
 </div>
+
 
 @if (ViewBag.Error != null)
 {
     <script>alert("Извините, но ставка была повышена другим пользователем.");</script>
 }
+
+<script>
+    $('#history').click(function () {
+        $('#overlay').fadeIn(400, 
+            function () { 
+                $('#modal_form')
+                    .css('display', 'block') 
+                    .animate({ opacity: 1, top: '50%' }, 200); 
+            });
+    });
+
+    $('#overlay').click(function () { 
+        $('#modal_form')
+            .animate({ opacity: 0, top: '45%' }, 200, 
+            function () { 
+                $(this).css('display', 'none'); 
+                $('#overlay').fadeOut(400); 
+            }
+            );
+    });
+</script>

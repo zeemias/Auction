@@ -1,0 +1,82 @@
+﻿@model Auction.Models.Item
+<!-- Header -->
+<header id="header">
+    <div class="inner">
+        <!-- Logo -->
+        <a href="/Home/Index" class="logo">
+            <img src="/Content/images/logo.png" alt="" />
+        </a>
+    </div>
+</header>
+<!-- Main -->
+<div id="main"> 
+    <div class="inner">
+        <header class="textcenter">
+            <h1>Аукцион ДельтаКредит</h1>
+            <h3>Добавление лота</h3>
+        </header>
+        <div class="widthmargin textcenter">
+            <img src="/Content/images/logo.jpg" width="50%" id="photo">
+            <input type="file" name="upload" id="upload" /><br/>
+            <button id="submit" class="button special">Загрузить фото</button>
+            @using (Html.BeginForm("AddItem", "Home", FormMethod.Post, new { @class = "form-horizontal", role = "form", style="margin-top:2%;" }))
+            {
+                @Html.HiddenFor(m => m.Image)
+                @Html.TextBoxFor(m => m.Name, new { @class = "form-control", placeholder = "Название" })
+                @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+                @Html.TextAreaFor(m => m.Description, new { @class = "form-control", placeholder = "Описание" })
+                @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger" })
+                @Html.TextBoxFor(m => m.DefaultBet, new { @class = "form-control", placeholder = "Ставка по умолчанию" })
+                @Html.ValidationMessageFor(m => m.DefaultBet, "", new { @class = "text-danger" })
+                @Html.TextBoxFor(m => m.Step, new { @class = "form-control", placeholder = "Шаг ставки" })
+                @Html.ValidationMessageFor(m => m.Step, "", new { @class = "text-danger" })
+                @Html.TextBoxFor(m => m.TimeOut, new { @class = "form-control", placeholder = "Дата и время завершения (дд/мм/гггг чч:мм:cc)" })
+                @Html.ValidationMessageFor(m => m.TimeOut, "", new { @class = "text-danger" })
+                @Html.DropDownListFor(m => m.Group, new SelectList(
+                          new List<Object>{
+                               new { value = "Группа 1" , text = "Группа 1" },
+                               new { value = "Группа 2" , text = "Группа 2" },
+                               new { value = "Общая" , text = "Общая" }
+                            },
+                          "value",
+                        "text"), new { @class = "form-control" })
+                <div class="buttextcenter">
+                    <input type="submit" class="button special" value="Добавить" />
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#submit').on('click', function (e) {
+        e.preventDefault();
+        var files = document.getElementById('upload').files;
+        if (files.length > 0) {
+            if (window.FormData !== undefined) {
+                var data = new FormData();
+                for (var x = 0; x < files.length; x++) {
+                    data.append("file" + x, files[x]);
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("UploadPhoto", "Home")',
+                    contentType: false,
+                    processData: false,
+                    data: data,
+                    success: function (result) {
+                        alert("Фото загружено!");
+                        $('#Image').val(result);
+                        $('#photo').attr('src', result);
+                    },
+                    error: function (xhr, status, p3) {
+                        alert(xhr.responseText);
+                    }
+                });
+            } else {
+                alert("Браузер не поддерживает загрузку файлов HTML5!");
+            }
+        }
+    });
+</script>

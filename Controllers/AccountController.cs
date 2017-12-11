@@ -12,6 +12,7 @@ using Auction.Models;
 using System.Web.Security;
 using System.IO;
 using System.Text;
+using System.Collections.Generic;
 
 namespace Auction.Controllers
 {
@@ -20,6 +21,8 @@ namespace Auction.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        private static List<string> registredUsers = new List<string>();
+        private string photoPath;
 
         public AccountController()
         {
@@ -60,6 +63,10 @@ namespace Auction.Controllers
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             ViewBag.ReturnUrl = returnUrl;
             return View();
         }
@@ -89,7 +96,7 @@ namespace Auction.Controllers
                     return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
                 case SignInStatus.Failure:
                 default:
-                    ModelState.AddModelError("", "Неверная попытка входа в систему.");
+                    ModelState.AddModelError("", "Неправильный логин или пароль");
                     return View(model);
             }
         }
@@ -142,7 +149,7 @@ namespace Auction.Controllers
         [Authorize]
         public ActionResult Register()
         {
-            if(User.Identity.Name != "DeltaCreditBot@yandex.ru")
+            if(User.Identity.Name != AppSettings.AdminName)
             {
                 return RedirectToAction("Index", "Home");
             }
@@ -156,7 +163,7 @@ namespace Auction.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(string a)
         {
-            if (User.Identity.Name != "DeltaCreditBot@yandex.ru")
+            if (User.Identity.Name != AppSettings.AdminName)
             {
                 return RedirectToAction("Index", "Home");
             }
@@ -164,37 +171,75 @@ namespace Auction.Controllers
             {
                 string pathGroup1 = Request["Group1"];
                 string pathGroup2 = Request["Group2"];
-                if(pathGroup1 != null)
+                if(pathGroup1 != "")
                 {
-
+                    await RegisterAll(pathGroup1, "Группа 1");
+                    ViewBag.RegisterSuccess = true;
                 }
-                if (pathGroup2 != null)
+                if (pathGroup2 != "")
                 {
-
+                    await RegisterAll(pathGroup2, "Группа 2");
+                    ViewBag.RegisterSuccess = true;
                 }
-                /*
-                Random rnd = new Random();
-                string writePath = @"C:\Users\Trainee\Desktop\LoginPassword.txt";
-                model.Password = Membership.GeneratePassword(12, 1) + rnd.Next(0,10).ToString();
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Coints = Convert.ToInt32(model.Coints), Group = model.Group };
-                var result = await UserManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
-                {
-                    using (StreamWriter sw = new StreamWriter(writePath, true, System.Text.Encoding.Default))
-                    {
-                        sw.WriteLine(model.Email+":"+ model.Password);
-                    }
-                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-                    return View();
-                }
-                AddErrors(result);*/
             }
-
             return View();
         }
 
-        private string photoPath;
+        //
+        // GET: /Account/RegisterSuccess
+        [Authorize]
+        public ActionResult RegisterSuccess()
+        {
+            if (User.Identity.Name != AppSettings.AdminName)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            return View();
+        }
 
+        //
+        // POST: /Account/RegisterSuccess
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> RegisterSuccess(string a)
+        {
+            if (User.Identity.Name != AppSettings.AdminName)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            if (registredUsers.Count != 0)
+            {
+                foreach (string str in registredUsers)
+                {
+                    string[] text = str.Split(':');
+                    string mailBody = "Логин: " + text[0] + "<br/>Пароль: " + text[1];
+                    await HomeController.SendEmailAsync(text[0], "Аукцион ДельтаКредит", mailBody);
+                }
+            }
+            registredUsers.Clear();
+            return View();
+        }
+
+        [Authorize]
+        private async Task RegisterAll(string Path, string GroupName)
+        {
+            string[] Group = System.IO.File.ReadAllLines(AppDomain.CurrentDomain.BaseDirectory.ToString() + Path);
+            foreach (string str in Group)
+            {
+                Random rnd = new Random();
+                string[] text = str.Split(':');
+                string password = Membership.GeneratePassword(12, 1) + rnd.Next(0, 10).ToString();
+                var user = new ApplicationUser { UserName = text[0], Email = text[0], Coints = Convert.ToInt32(text[1]), Group = GroupName };
+                var result = await UserManager.CreateAsync(user, password);
+                if (result.Succeeded)
+                {
+                    registredUsers.Add(text[0] + ":" + password);
+                }
+            }
+        }
+
+        [Authorize]
         public JsonResult UploadGroup()
         {
             foreach (string file in Request.Files)

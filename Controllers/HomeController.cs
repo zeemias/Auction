@@ -16,6 +16,8 @@ namespace Auction.Controllers
     [Authorize]
     public class HomeController : Controller
     {
+        private string photoPath;
+
         public async Task<ActionResult> Index()
         {
             using (ApplicationDbContext db = new ApplicationDbContext())
@@ -34,6 +36,7 @@ namespace Auction.Controllers
             {
                 ApplicationUser user = await db.Users.FirstOrDefaultAsync(t => t.Email == User.Identity.Name);
                 Item item = await db.Items.FirstOrDefaultAsync(t => t.Id == id);
+                List<Story> story = await db.Stories.Where(t => t.ItemId == id).ToListAsync();
                 if (item.Group != "Общая" && item.Group != user.Group)
                 {
                     return RedirectToAction("Index", "Home");
@@ -59,6 +62,7 @@ namespace Auction.Controllers
                     ViewBag.LastUser = item.LastUser;
                     ViewBag.Step = item.Step;
                 }
+                ViewBag.Stories = story.Reverse<Story>();
             }
             return View();
         }
@@ -91,7 +95,16 @@ namespace Auction.Controllers
                         item.LastBetTime = DateTime.Now;
                         item.LastUser = user.Email;
                         db.Entry(userLast).State = EntityState.Modified;
-                        await SendEmailAsync(user.Email, "Аукцион ДельтаКредит", "Ваша ставка на " + item.Name + " была повышена другим пользователем.");
+                        db.Stories.Add(new Story
+                        {
+                            ItemId = id,
+                            User = user.Email,
+                            UserId = user.Id,
+                            NewBet = item.LastBet,
+                            LastBet = item.LastBet - item.Step,
+                            Time = item.LastBetTime
+                        });
+                        await SendEmailAsync(userLast.Email, "Аукцион ДельтаКредит", "Ваша ставка на " + item.Name + " была повышена другим пользователем.");
                     }
                     else
                     {
@@ -103,6 +116,7 @@ namespace Auction.Controllers
                     db.Entry(item).State = EntityState.Modified;
                     await db.SaveChangesAsync();
                 }
+                List<Story> story = await db.Stories.Where(t => t.ItemId == id).ToListAsync();
                 ViewBag.Coints = user.Coints;
                 ViewBag.Name = item.Name;
                 ViewBag.Description = item.Description;
@@ -111,25 +125,69 @@ namespace Auction.Controllers
                 ViewBag.LastBetTime = item.LastBetTime;
                 ViewBag.LastUser = item.LastUser;
                 ViewBag.Step = item.Step;
+                ViewBag.Stories = story.Reverse<Story>(); ;
             }
             return View();
         }
 
-        private static async Task SendEmailAsync(string GetEmail, string mailSubject, string mailBody)
+        public ActionResult AddItem()
+        {
+            if (User.Identity.Name != AppSettings.AdminName)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> AddItem(Item item)
+        {
+            if (User.Identity.Name != AppSettings.AdminName)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            item.LastBet = 0;
+            item.LastBetTime = DateTime.Now;
+            item.LastUser = "Empty";
+            using (ApplicationDbContext db = new ApplicationDbContext())
+            {
+                db.Items.Add(item);
+                await db.SaveChangesAsync();
+            }
+            string path = "Item/" + item.Id;
+            return RedirectToAction(path, "Home");
+        }
+
+        public static async Task SendEmailAsync(string GetEmail, string mailSubject, string mailBody)
         {
             MailMessage mail = new MailMessage();
-            mail.From = new MailAddress("DeltaCreditBot@yandex.ru");
+            mail.From = new MailAddress(AppSettings.SendEmail);
             mail.To.Add(GetEmail);
             mail.Subject = mailSubject;
             mail.Body = mailBody;
             mail.IsBodyHtml = true;
 
-            using (SmtpClient smtp = new SmtpClient("smtp.yandex.ru", 25))
+            using (SmtpClient smtp = new SmtpClient(AppSettings.SMTP_Address, AppSettings.SMTP_Port))
             {
-                smtp.Credentials = new NetworkCredential("DeltaCreditBot@yandex.ru", "");
-                smtp.EnableSsl = true;
+                smtp.Credentials = new NetworkCredential(AppSettings.SendEmail, AppSettings.SendEmailPassword);
+                smtp.EnableSsl = AppSettings.SSL;
                 await smtp.SendMailAsync(mail);
             }
+        }
+
+        public JsonResult UploadPhoto()
+        {
+            foreach (string file in Request.Files)
+            {
+                var upload = Request.Files[file];
+                if (upload != null)
+                {
+                    string fileName = "/Content/images/" + System.IO.Path.GetFileName(upload.FileName);
+                    upload.SaveAs(Server.MapPath(fileName));
+                    photoPath = fileName;
+                }
+            }
+            return Json(photoPath);
         }
 
     }

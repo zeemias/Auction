@@ -2,7 +2,7 @@
 <header id="header">
     <div class="inner">
         <!-- Logo -->
-        <a href="Index" class="logo">
+        <a href="/Home/Index" class="logo">
             <img src="/Content/images/logo.png" alt="" />
         </a>
     </div>
@@ -10,25 +10,39 @@
 <!-- Main -->
 <div id="main">
     <div class="inner">
-        <header style="text-align: center;">
+        <header class="textcenter">
             <h1>Аукцион ДельтаКредит</h1>
             <h3>Регистрация</h3>
         </header>
-        <div style="width: 50%; margin: 0 auto;">
-            <h2>Группа 1</h2>
-            <input type="file" name="uploadGroup1" id="uploadGroup1" />
-            <button id="submitGroup1" class="button special">Загрузить</button>
-            <h2>Группа 2</h2>
-            <input type="file" name="uploadGroup2" id="uploadGroup2" />
-            <button id="submitGroup2" class="button special">Загрузить</button>
-            @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+        <div class="widthmargin textcenter">
+            @if (ViewBag.RegisterSuccess == true)
             {
-                @Html.AntiForgeryToken()
-                <input type="text" name="Group1" id="Group1" />
-                <input type="text" name="Group2" id="Group2" />
-                <div style="margin-top: 8%; text-align: center;">
-                    <input type="submit" class="button special" value="Зарегистрировать" />
-                </div>
+                <h2>Пользователи зарегистрированы</h2>
+                using (Html.BeginForm("RegisterSuccess", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="buttextcenter">
+                        <input type="submit" class="button special" value="Отправить логины и пароли пользователям" />
+                    </div>
+                }
+            }
+            else
+            {
+                <h2>Группа 1</h2>
+                <input type="file" name="uploadGroup1" id="uploadGroup1" />
+                <button id="submitGroup1" class="button special">Загрузить</button>
+                <h2>Группа 2</h2>
+                <input type="file" name="uploadGroup2" id="uploadGroup2" />
+                <button id="submitGroup2" class="button special">Загрузить</button>
+                using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="Group1" id="Group1" value="" />
+                    <input type="hidden" name="Group2" id="Group2" value="" />
+                    <div class="buttextcenter">
+                        <input type="submit" class="button special" value="Зарегистрировать" />
+                    </div>
+                }
             }
         </div>
     </div>
