@@ -224,7 +224,7 @@ namespace Auction.Controllers
             }
         }
 
-        public static async Task SendEmailAsync(string GetEmail, string mailSubject, string mailBody)
+        public async Task SendEmailAsync(string GetEmail, string mailSubject, string mailBody)
         {
             MailMessage mail = new MailMessage();
             mail.From = new MailAddress(AppSettings.SendEmail);
