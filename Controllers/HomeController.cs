@@ -14,12 +14,15 @@ namespace Auction.Controllers
     [Authorize]
     public class HomeController : Controller
     {
-
         public async Task<ActionResult> Index()
         {
             using (AuctionContext db = new AuctionContext())
             {
                 User user = await db.Users.FirstOrDefaultAsync(t => t.Login == User.Identity.Name);
+                if(user == null)
+                {
+                    return RedirectToAction("RegisterError","Home");
+                }
                 ViewBag.Coints = user.Coints;
                 ViewBag.Items = await db.Items.Where(t => t.Group == user.Group || t.Group == "Общая").ToListAsync();
             }
@@ -31,6 +34,10 @@ namespace Auction.Controllers
             using (AuctionContext db = new AuctionContext())
             {
                 User user = await db.Users.FirstOrDefaultAsync(t => t.Login == User.Identity.Name);
+                if (user == null)
+                {
+                    return RedirectToAction("RegisterError", "Home");
+                }
                 Item item = await db.Items.FirstOrDefaultAsync(t => t.Id == id);
                 List<Story> story = await db.Stories.Where(t => t.ItemId == id).ToListAsync();
                 if (item.Group != "Общая" && item.Group != user.Group)
@@ -197,6 +204,11 @@ namespace Auction.Controllers
                 }
             }
             ViewBag.SendSuccess = true;
+            return View();
+        }
+
+        public ActionResult RegisterError()
+        {
             return View();
         }
 

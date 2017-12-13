@@ -28,10 +28,6 @@
 <div id="main">
     <div class="inner" style="text-align: center;">
         <h1>@Model.Name</h1>
-        @if (Model.TimeOut < DateTime.Now)
-        {
-            <div class="completed"></div>
-        }
         <div class="" style="display: inline-block; width: 100%;">
             <div class="" style="width: 60%; float: left;">
                 <span class="image main">
@@ -56,6 +52,7 @@
                     <input name="lastBet" type="hidden" value="@Model.LastBet" />
                     if (Model.TimeOut < DateTime.Now)
                     {
+                        <div class="completed"></div>
                         <button class="button special" disabled>Аукцион завершен</button>
                     }
                     else if (Model.LastUser == User.Identity.Name)

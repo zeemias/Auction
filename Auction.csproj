@@ -284,6 +284,7 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Register.cshtml" />
     <Content Include="Views\Home\SendRegistrationMessage.cshtml" />
+    <Content Include="Views\Home\RegisterError.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ErrorLogs\" />
