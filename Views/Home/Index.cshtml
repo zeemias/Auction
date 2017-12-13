@@ -5,33 +5,18 @@
         <a href="/Home/Index" class="logo">
             <img src="/Content/images/logo.png" alt="" />
         </a>
-        <nav style="right: 120px; top: 50px; color: black;">Баланс: @ViewBag.Coints <span class="icon fa-btc"></span></nav>
         <!-- Nav -->
-        <nav>
-            <ul>
-                <li><a href="#menu">Menu</a></li>
-            </ul>
-        </nav>
+        <nav>@User.Identity.Name<br/>Баланс: @ViewBag.Coints<span class="icon fa-btc"></span></nav>
     </div>
 </header>
-
-<!-- Menu -->
-<nav id="menu">
-    <h2>Меню</h2>
-    <ul>
-        <li>Логин: @User.Identity.Name</li>
-        <li>Баланс: @ViewBag.Coints <span class="icon fa-btc"></span></li>
-        <li><a href="/Account/LogOff">Выйти</a></li>
-    </ul>
-</nav>
 
 <!-- Main -->
 <div id="main">
     <div class="inner">
-        <header class="textcenter">
-            <h1>Аукцион ДельтаКредит</h1>
-            <h3>До конца аукциона осталось:</h3>
-            <script src="http://megatimer.ru/s/39ac4279881defe5f43037c562db2f34.js"></script>
+        <header style="text-align: center;">
+            <h1>#PROКАЧКА</h1>
+            <h2 style="color:black;">До конца аукциона осталось:</h2>
+            <script src="http://megatimer.ru/s/a11003fdf036516ac368e7824d9c07e7.js"></script>
         </header>
         <section class="tiles">
             @foreach (var item in ViewBag.Items)

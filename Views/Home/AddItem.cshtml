@@ -11,11 +11,11 @@
 <!-- Main -->
 <div id="main"> 
     <div class="inner">
-        <header class="textcenter">
-            <h1>Аукцион ДельтаКредит</h1>
+        <header style="text-align: center;">
+            <h1>Большая #PROКАЧКА</h1>
             <h3>Добавление лота</h3>
         </header>
-        <div class="widthmargin textcenter">
+        <div style="width: 50%; margin: 0 auto; text-align: center;">
             <img src="/Content/images/logo.jpg" width="50%" id="photo">
             <input type="file" name="upload" id="upload" /><br/>
             <button id="submit" class="button special">Загрузить фото</button>
@@ -30,7 +30,7 @@
                 @Html.ValidationMessageFor(m => m.DefaultBet, "", new { @class = "text-danger" })
                 @Html.TextBoxFor(m => m.Step, new { @class = "form-control", placeholder = "Шаг ставки" })
                 @Html.ValidationMessageFor(m => m.Step, "", new { @class = "text-danger" })
-                @Html.TextBoxFor(m => m.TimeOut, new { @class = "form-control", placeholder = "Дата и время завершения (дд/мм/гггг чч:мм:cc)" })
+                @Html.TextBoxFor(m => m.TimeOut, new { @class = "form-control", placeholder = "Дата и время завершения (дд.мм.гггг чч:мм)" })
                 @Html.ValidationMessageFor(m => m.TimeOut, "", new { @class = "text-danger" })
                 @Html.DropDownListFor(m => m.Group, new SelectList(
                           new List<Object>{
@@ -40,7 +40,7 @@
                             },
                           "value",
                         "text"), new { @class = "form-control" })
-                <div class="buttextcenter">
+                <div style="margin-top: 8%; text-align: center;">
                     <input type="submit" class="button special" value="Добавить" />
                 </div>
             }

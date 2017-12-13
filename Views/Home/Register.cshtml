@@ -1,0 +1,105 @@
+﻿<!-- Header -->
+<header id="header">
+    <div class="inner">
+        <!-- Logo -->
+        <a href="/Home/Index" class="logo">
+            <img src="/Content/images/logo.png" alt="" />
+        </a>
+    </div>
+</header>
+<!-- Main -->
+<div id="main">
+    <div class="inner">
+        <header style="text-align: center;">
+            <h1>Большая #PROКАЧКА</h1>
+            <h3>Регистрация</h3>
+        </header>
+        <div style="width: 50%; margin: 0 auto; text-align: center;">
+            <h3>Пользователи зарегистрированы</h3>
+            @if (ViewBag.RegisterSuccess == true)
+            {
+                <a href="/Home/SendRegistrationMessage" class="button special">Перейти к отправке сообщений пользователям</a>
+            }
+            else
+            {
+                <h2>Группа 1</h2>
+                <input type="file" name="uploadGroup1" id="uploadGroup1" />
+                <button id="submitGroup1" class="button special">Загрузить</button>
+                <h2>Группа 2</h2>
+                <input type="file" name="uploadGroup2" id="uploadGroup2" />
+                <button id="submitGroup2" class="button special">Загрузить</button>
+                using (Html.BeginForm("Register", "Home", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                {
+                    <input type="hidden" name="Group1" id="Group1" value="" />
+                    <input type="hidden" name="Group2" id="Group2" value="" />
+                    <div style="margin-top: 8%; text-align: center;">
+                        <input type="submit" class="button special" value="Зарегистрировать" />
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#submitGroup1').on('click', function (e) {
+        e.preventDefault();
+        var files = document.getElementById('uploadGroup1').files;
+        if (files.length > 0) {
+            if (window.FormData !== undefined) {
+                var data = new FormData();
+                for (var x = 0; x < files.length; x++) {
+                    data.append("file" + x, files[x]);
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("UploadGroup", "Account")',
+                    contentType: false,
+                    processData: false,
+                    data: data,
+                    success: function (result) {
+                        alert("Группа загружена!");
+                        $('#Group1').val(result);
+                    },
+                    error: function (xhr, status, p3) {
+                        alert(xhr.responseText);
+                    }
+                });
+            } else {
+                alert("Браузер не поддерживает загрузку файлов HTML5!");
+            }
+        }
+    });
+
+    $('#submitGroup2').on('click', function (e) {
+        e.preventDefault();
+        var files = document.getElementById('uploadGroup2').files;
+        if (files.length > 0) {
+            if (window.FormData !== undefined) {
+                var data = new FormData();
+                for (var x = 0; x < files.length; x++) {
+                    data.append("file" + x, files[x]);
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("UploadGroup", "Account")',
+                    contentType: false,
+                    processData: false,
+                    data: data,
+                    success: function (result) {
+                        alert("Группа загружена!");
+                        $('#Group2').val(result);
+                    },
+                    error: function (xhr, status, p3) {
+                        alert(xhr.responseText);
+                    }
+                });
+            } else {
+                alert("Браузер не поддерживает загрузку файлов HTML5!");
+            }
+        }
+    });
+
+</script>

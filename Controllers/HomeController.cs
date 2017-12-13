@@ -1,6 +1,4 @@
 ﻿using Auction.Models;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -16,13 +14,12 @@ namespace Auction.Controllers
     [Authorize]
     public class HomeController : Controller
     {
-        private string photoPath;
 
         public async Task<ActionResult> Index()
         {
-            using (ApplicationDbContext db = new ApplicationDbContext())
+            using (AuctionContext db = new AuctionContext())
             {
-                ApplicationUser user = await db.Users.FirstOrDefaultAsync(t => t.Email == User.Identity.Name);
+                User user = await db.Users.FirstOrDefaultAsync(t => t.Login == User.Identity.Name);
                 ViewBag.Coints = user.Coints;
                 ViewBag.Items = await db.Items.Where(t => t.Group == user.Group || t.Group == "Общая").ToListAsync();
             }
@@ -31,57 +28,43 @@ namespace Auction.Controllers
 
         public async Task<ActionResult> Item(int id = 1)
         {
-            ViewBag.Id = id;
-            using (ApplicationDbContext db = new ApplicationDbContext())
+            using (AuctionContext db = new AuctionContext())
             {
-                ApplicationUser user = await db.Users.FirstOrDefaultAsync(t => t.Email == User.Identity.Name);
+                User user = await db.Users.FirstOrDefaultAsync(t => t.Login == User.Identity.Name);
                 Item item = await db.Items.FirstOrDefaultAsync(t => t.Id == id);
                 List<Story> story = await db.Stories.Where(t => t.ItemId == id).ToListAsync();
                 if (item.Group != "Общая" && item.Group != user.Group)
                 {
                     return RedirectToAction("Index", "Home");
                 }
-                ViewBag.Coints = user.Coints;
                 if (item.DefaultBet >= item.LastBet)
                 {
-                    ViewBag.Name = item.Name;
-                    ViewBag.Description = item.Description;
-                    ViewBag.Image = item.Image;
-                    ViewBag.LastBet = item.DefaultBet;
-                    ViewBag.LastBetTime = "";
-                    ViewBag.LastUser = "";
-                    ViewBag.Step = item.Step;
+                    item.LastBet = item.DefaultBet;
                 }
-                else
-                {
-                    ViewBag.Name = item.Name;
-                    ViewBag.Description = item.Description;
-                    ViewBag.Image = item.Image;
-                    ViewBag.LastBet = item.LastBet;
-                    ViewBag.LastBetTime = item.LastBetTime;
-                    ViewBag.LastUser = item.LastUser;
-                    ViewBag.Step = item.Step;
-                }
+                ViewBag.Coints = user.Coints;
                 ViewBag.Stories = story.Reverse<Story>();
+                return View(item);
             }
-            return View();
         }
 
         [HttpPost]
         public async Task<ActionResult> Item(int id, int lastBet)
         {
-            ViewBag.Id = id;
-            using (ApplicationDbContext db = new ApplicationDbContext())
+            using (AuctionContext db = new AuctionContext())
             {
-                ApplicationUser user = await db.Users.FirstOrDefaultAsync(t => t.Email == User.Identity.Name);
+                User user = await db.Users.FirstOrDefaultAsync(t => t.Login == User.Identity.Name);
                 Item item = await db.Items.FirstOrDefaultAsync(t => t.Id == id);
-                ApplicationUser userLast = await db.Users.FirstOrDefaultAsync(t => t.Email == item.LastUser);
+                User userLast = await db.Users.FirstOrDefaultAsync(t => t.Login == item.LastUser);
 
                 if (item.DefaultBet >= item.LastBet)
                 {
                     item.LastBet = item.DefaultBet;
                 }
-                if (lastBet < item.LastBet)
+                if (item.TimeOut < DateTime.Now)
+                {
+                    ViewBag.Error = "Аукцион завершен!";
+                }
+                else if (lastBet < item.LastBet)
                 {
                     ViewBag.Error = "Ставка была повышена другим пользователем.";
                 }
@@ -93,41 +76,33 @@ namespace Auction.Controllers
                         userLast.Coints += item.LastBet;
                         item.LastBet = item.LastBet + item.Step;
                         item.LastBetTime = DateTime.Now;
-                        item.LastUser = user.Email;
+                        item.LastUser = user.Login;
                         db.Entry(userLast).State = EntityState.Modified;
-                        db.Stories.Add(new Story
-                        {
-                            ItemId = id,
-                            User = user.Email,
-                            UserId = user.Id,
-                            NewBet = item.LastBet,
-                            LastBet = item.LastBet - item.Step,
-                            Time = item.LastBetTime
-                        });
                         await SendEmailAsync(userLast.Email, "Аукцион ДельтаКредит", "Ваша ставка на " + item.Name + " была повышена другим пользователем.");
                     }
                     else
                     {
                         item.LastBet = item.LastBet + item.Step;
                         item.LastBetTime = DateTime.Now;
-                        item.LastUser = user.Email;
+                        item.LastUser = user.Login;
                     }
+                    db.Stories.Add(new Story
+                    {
+                        ItemId = id,
+                        User = user.Login,
+                        UserId = user.Id,
+                        NewBet = item.LastBet,
+                        LastBet = item.LastBet - item.Step,
+                        Time = item.LastBetTime
+                    });
                     db.Entry(user).State = EntityState.Modified;
                     db.Entry(item).State = EntityState.Modified;
                     await db.SaveChangesAsync();
                 }
                 List<Story> story = await db.Stories.Where(t => t.ItemId == id).ToListAsync();
-                ViewBag.Coints = user.Coints;
-                ViewBag.Name = item.Name;
-                ViewBag.Description = item.Description;
-                ViewBag.Image = item.Image;
-                ViewBag.LastBet = item.LastBet;
-                ViewBag.LastBetTime = item.LastBetTime;
-                ViewBag.LastUser = item.LastUser;
-                ViewBag.Step = item.Step;
-                ViewBag.Stories = story.Reverse<Story>(); ;
+                ViewBag.Stories = story.Reverse<Story>();
+                return View(item);
             }
-            return View();
         }
 
         public ActionResult AddItem()
@@ -149,13 +124,95 @@ namespace Auction.Controllers
             item.LastBet = 0;
             item.LastBetTime = DateTime.Now;
             item.LastUser = "Empty";
-            using (ApplicationDbContext db = new ApplicationDbContext())
+            using (AuctionContext db = new AuctionContext())
             {
                 db.Items.Add(item);
                 await db.SaveChangesAsync();
             }
             string path = "Item/" + item.Id;
             return RedirectToAction(path, "Home");
+        }
+
+        public ActionResult Register()
+        {
+            if (User.Identity.Name != AppSettings.AdminName)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Register(string a)
+        {
+            if (User.Identity.Name != AppSettings.AdminName)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            if (ModelState.IsValid)
+            {
+                string pathGroup1 = Request["Group1"];
+                string pathGroup2 = Request["Group2"];
+                if (pathGroup1 != "")
+                {
+                    await RegisterAll(pathGroup1, "Группа 1");
+                    ViewBag.RegisterSuccess = true;
+                }
+                if (pathGroup2 != "")
+                {
+                    await RegisterAll(pathGroup2, "Группа 2");
+                    ViewBag.RegisterSuccess = true;
+                }
+            }
+            return View();
+        }
+
+        public ActionResult SendRegistrationMessage()
+        {
+            if (User.Identity.Name != AppSettings.AdminName)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            return View();
+        }
+
+
+        [HttpPost]
+        public async Task<ActionResult> SendRegistrationMessage(string a)
+        {
+            if (User.Identity.Name != AppSettings.AdminName)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            using (AuctionContext db = new AuctionContext())
+            {
+                List<User> users = await db.Users.ToListAsync();
+                if (users.Count != 0)
+                {
+                    foreach (var user in users)
+                    {
+                        string mailBody = "Для входа на аукцион #PROКАЧКА используйте Вашу учетную запись DeltaCredit.";
+                        await SendEmailAsync(user.Email, "Аукцион ДельтаКредит", mailBody);
+                    }
+                }
+            }
+            ViewBag.SendSuccess = true;
+            return View();
+        }
+
+        private async Task RegisterAll(string Path, string GroupName)
+        {
+            string[] Group = System.IO.File.ReadAllLines(AppDomain.CurrentDomain.BaseDirectory.ToString() + Path);
+            foreach (string str in Group)
+            {
+                string[] text = str.Split(':');
+                using (AuctionContext db = new AuctionContext())
+                {
+                    string[] email = text[0].Split('\\');
+                    db.Users.Add(new User { Login = text[0], Email = email[1] + "@deltacredit.ru", Group = GroupName, Coints = Convert.ToInt32(text[1]) });
+                    await db.SaveChangesAsync();
+                }
+            }
         }
 
         public static async Task SendEmailAsync(string GetEmail, string mailSubject, string mailBody)
@@ -177,6 +234,7 @@ namespace Auction.Controllers
 
         public JsonResult UploadPhoto()
         {
+            string filePath = "";
             foreach (string file in Request.Files)
             {
                 var upload = Request.Files[file];
@@ -184,11 +242,26 @@ namespace Auction.Controllers
                 {
                     string fileName = "/Content/images/" + System.IO.Path.GetFileName(upload.FileName);
                     upload.SaveAs(Server.MapPath(fileName));
-                    photoPath = fileName;
+                    filePath = fileName;
                 }
             }
-            return Json(photoPath);
+            return Json(filePath);
         }
 
+        public JsonResult UploadGroup()
+        {
+            string filePath = "";
+            foreach (string file in Request.Files)
+            {
+                var upload = Request.Files[file];
+                if (upload != null)
+                {
+                    string fileName = "/Register/" + System.IO.Path.GetFileName(upload.FileName);
+                    upload.SaveAs(Server.MapPath(fileName));
+                    filePath = fileName;
+                }
+            }
+            return Json(filePath);
+        }
     }
 }

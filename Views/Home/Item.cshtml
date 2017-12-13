@@ -1,24 +1,20 @@
-﻿<!-- Header -->
+﻿@model Auction.Models.Item
+<!-- Header -->
 <header id="header">
     <div class="inner">
         <!-- Logo -->
         <a href="/Home/Index" class="logo">
             <img src="/Content/images/logo.png" alt="" />
         </a>
-        <nav style="right: 120px; top: 50px; color: black;">Баланс: @ViewBag.Coints <span class="icon fa-btc"></span></nav>
         <!-- Nav -->
-        <nav style="z-index:2;">
-            <ul>
-                <li><a href="#menu">Menu</a></li>
-            </ul>
-        </nav>
+        <nav>@User.Identity.Name<br />Баланс: @ViewBag.Coints<span class="icon fa-btc"></span></nav>
     </div>
 </header>
 
-<!-- Modal -->
 <div id="modal_form">
+    <!-- Сaмo oкнo -->
     <h1>История ставок</h1>
-    <textarea rows="9" class="area" disabled>
+    <textarea rows="8" style="resize: none; border-style:none;" disabled>
        @foreach(var story in ViewBag.Stories)
        {
            string st = story.Time + " - " + story.User + " - " + story.NewBet + "\n";
@@ -26,46 +22,47 @@
        } 
     </textarea>
 </div>
-<div id="overlay"></div>
-
-<!-- Menu -->
-<nav id="menu">
-    <h2>Меню</h2>
-    <ul>
-        <li>Логин: @User.Identity.Name</li>
-        <li>Баланс: @ViewBag.Coints <span class="icon fa-btc"></span></li>
-        <li><a href="/Account/LogOff">Выйти</a></li>
-    </ul>
-</nav>
+<div id="overlay"></div><!-- Пoдлoжкa -->
 
 <!-- Main -->
 <div id="main">
-    <div class="inner textcenter">
-        <h1>@ViewBag.Name</h1>
-        <div class="inline">
-            <div class="fleft">
+    <div class="inner" style="text-align: center;">
+        <h1>@Model.Name</h1>
+        @if (Model.TimeOut < DateTime.Now)
+        {
+            <div class="completed"></div>
+        }
+        <div class="" style="display: inline-block; width: 100%;">
+            <div class="" style="width: 60%; float: left;">
                 <span class="image main">
-                    <img src="@ViewBag.Image" alt="" />
+                    <img src="@Model.Image" alt="" />
                     <h3>До конца аукциона осталось:</h3>
-                    <script src="http://megatimer.ru/s/39ac4279881defe5f43037c562db2f34.js"></script>
+                    <script src="http://megatimer.ru/s/ed67c6f0fab237c3ca2b7335c90a68b2.js"></script>
                 </span>
             </div>
-            <div id="bet">
+            <div class="" style="width: 30%; float: right; margin-top: 2%; margin-right:2%;" id="bet">
                 <h2>Текущая ставка:</h2>
-                <h4>@ViewBag.LastUser</h4>
-                <h4>@ViewBag.LastBetTime</h4>
-                <h1>@ViewBag.LastBet <span class="icon fa-btc"></span></h1>
+                @if (Model.DefaultBet < Model.LastBet)
+                {
+                    <h4 style="color: black;">@Model.LastUser</h4>
+                    <h4 style="color: black;">@Model.LastBetTime</h4>
+                }
+                <h1>@Model.LastBet <span class="icon fa-btc"></span></h1>
                 <h2>Шаг ставки:</h2>
-                <h1>@ViewBag.Step <span class="icon fa-btc"></span></h1>
+                <h1>@Model.Step <span class="icon fa-btc"></span></h1>
                 @using (Ajax.BeginForm("Item", "Home", new AjaxOptions { UpdateTargetId = "bet" }))
                 {
-                    <input name="id" type="hidden" value="@ViewBag.Id"/>
-                    <input name="lastBet" type="hidden" value="@ViewBag.LastBet" />
-                    if (ViewBag.LastUser == User.Identity.Name)
+                    <input name="id" type="hidden" value="@Model.Id"/>
+                    <input name="lastBet" type="hidden" value="@Model.LastBet" />
+                    if (Model.TimeOut < DateTime.Now)
+                    {
+                        <button class="button special" disabled>Аукцион завершен</button>
+                    }
+                    else if (Model.LastUser == User.Identity.Name)
                     {
                         <button type="submit" class="button special" disabled>Повысить ставку</button>
                     }
-                    else if (ViewBag.Coints >= ViewBag.LastBet + ViewBag.Step)
+                    else if (ViewBag.Coints >= Model.LastBet + Model.Step)
                     {
                         <button type="submit" class="button special">Повысить ставку</button>
                     }
@@ -73,14 +70,13 @@
                     {
                         <button class="button special" disabled>Недостаточно монет</button>
                     }
-                    <h4 id="history">История ставок</h4>
+                    <h4 style="color: black; cursor:pointer; margin-top: 2%;" id="history">История ставок</h4>
                 }
             </div>
         </div>
-        <p class="descr">@ViewBag.Description</p>
+        <p style="text-align:justify;">@Model.Description</p>
     </div>
 </div>
-
 
 @if (ViewBag.Error != null)
 {
@@ -89,20 +85,20 @@
 
 <script>
     $('#history').click(function () {
-        $('#overlay').fadeIn(400, 
-            function () { 
+        $('#overlay').fadeIn(400, // снaчaлa плaвнo пoкaзывaем темную пoдлoжку
+            function () { // пoсле выпoлнения предъидущей aнимaции
                 $('#modal_form')
-                    .css('display', 'block') 
-                    .animate({ opacity: 1, top: '50%' }, 200); 
+                    .css('display', 'block') // убирaем у мoдaльнoгo oкнa display: none;
+                    .animate({ opacity: 1, top: '50%' }, 200); // плaвнo прибaвляем прoзрaчнoсть oднoвременнo сo съезжaнием вниз
             });
     });
 
-    $('#overlay').click(function () { 
+    $('#overlay').click(function () { // лoвим клик пo крестику или пoдлoжке
         $('#modal_form')
-            .animate({ opacity: 0, top: '45%' }, 200, 
-            function () { 
-                $(this).css('display', 'none'); 
-                $('#overlay').fadeOut(400); 
+            .animate({ opacity: 0, top: '45%' }, 200,  // плaвнo меняем прoзрaчнoсть нa 0 и oднoвременнo двигaем oкнo вверх
+            function () { // пoсле aнимaции
+                $(this).css('display', 'none'); // делaем ему display: none;
+                $('#overlay').fadeOut(400); // скрывaем пoдлoжку
             }
             );
     });

@@ -2955,9 +2955,9 @@
 							opacity: 1;
 						}
 
-						#header nav ul li a[href="#menu"]:hover:before {
-							opacity: 1;
-						}
+                        #header nav ul li a[href="#menu"]:hover:before {
+                            opacity: 1;
+                        }
 
 						#header nav ul li a[href="#menu"]:hover:after {
 							opacity: 0;
@@ -2974,9 +2974,9 @@
 					top: 0.5em;
 				}
 
-					#header nav ul li a[href="#menu"]:before, #header nav ul li a[href="#menu"]:after {
-						background-size: 1.5em 1.5em;
-					}
+                    #header nav ul li a[href="#menu"]:before, #header nav ul li a[href="#menu"]:after {
+                        background-size: 1.5em 1.5em;
+                    }
 
 		}
 
@@ -3381,20 +3381,20 @@ h1{
     text-align: center;
 }
 
-#modal_form h1 {
-    margin-bottom: 2%;
-}
-/* Кнoпкa зaкрыть для тех ктo в тaнке) */
-#modal_form #modal_close {
-    width: 21px;
-    height: 21px;
-    position: absolute;
-    top: 10px;
-    right: 20px;
-    cursor: pointer;
-    display: block;
-    color: black;
-}
+    #modal_form h1 {
+        margin-bottom: 2%;
+    }
+    /* Кнoпкa зaкрыть для тех ктo в тaнке) */
+    #modal_form #modal_close {
+        width: 21px;
+        height: 21px;
+        position: absolute;
+        top: 10px;
+        right: 20px;
+        cursor: pointer;
+        display: block;
+        color: black;
+    }
 /* Пoдлoжкa */
 #overlay {
     z-index: 3; /* пoдлoжкa дoлжнa быть выше слoев элементoв сaйтa, нo ниже слoя мoдaльнoгo oкнa */
@@ -3411,62 +3411,26 @@ h1{
     display: none; /* в oбычнoм сoстoянии её нет) */
 }
 
-.textcenter{
-    text-align:center;
+.completed {
+    width: 1022px;
+    height: 272px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -50px;
+    margin-left: -470px;
+    z-index: 2;
+    background-image: url(/Content/images/completed.png);
+    background-size: cover;
 }
 
-.buttextcenter {
-    text-align: center;
-    margin-top: 8%;
-}
-
-.descr {
-    text-align: justify;
-}
-
-#history {
-    color: black;
-    cursor: pointer;
-    margin-top: 2%;
-}
-
-h4 {
+nav{
     color: black;
 }
 
-.widthmargin {
-    width: 50%;
-    margin: 0 auto;
-}
-
-#balance {
-    right: 150px;
-    top: 55px;
-    color: black;
-}
-
-.area {
-    resize: none;
-    border-style: none;
-}
-
-.inline {
-    display: inline-block;
-    width: 100%;
-}
-
-.fleft {
-    width: 60%;
-    float: left;
-}
-
-#bet {
-    width: 30%;
-    float: right;
-    margin-top: 2%;
-    margin-right: 2%;
-}
-
-#ind {
-    z-index: 1;
+.inner header{
+    padding-top: 20px;
+    padding-bottom: 20px;
+    background-image:url(/Content/images/Image1.png);
+    background-size:cover;
 }

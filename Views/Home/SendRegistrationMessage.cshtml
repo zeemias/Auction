@@ -1,0 +1,36 @@
+﻿<!-- Header -->
+<header id="header">
+    <div class="inner">
+        <!-- Logo -->
+        <a href="/Home/Index" class="logo">
+            <img src="/Content/images/logo.png" alt="" />
+        </a>
+    </div>
+</header>
+<!-- Main -->
+<div id="main">
+    <div class="inner">
+        @if (ViewBag.SendSuccess == true)
+        {
+            <header style="text-align: center;">
+                <h1>Большая #PROКАЧКА</h1>
+                <h2>Сообщения отправлены</h2>
+            </header>
+        }
+        else
+        {
+            <header style="text-align: center;">
+                <h1>Аукцион ДельтаКредит</h1>
+                <h3>Отправка сообщений о регистрации</h3>
+            </header>
+            <div style="width: 50%; margin: 0 auto; text-align: center;">
+                @using (Html.BeginForm("SendRegistrationMessage", "Home", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                {
+                    <div style="margin-top: 8%;">
+                        <button type="submit" class="button special">Отправить информацию пользователям</button>
+                    </div>
+                }
+            </div>
+        }   
+    </div>
+</div>
