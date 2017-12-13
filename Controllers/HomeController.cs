@@ -39,7 +39,6 @@ namespace Auction.Controllers
                     return RedirectToAction("RegisterError", "Home");
                 }
                 Item item = await db.Items.FirstOrDefaultAsync(t => t.Id == id);
-                List<Story> story = await db.Stories.Where(t => t.ItemId == id).ToListAsync();
                 if (item.Group != "Общая" && item.Group != user.Group)
                 {
                     return RedirectToAction("Index", "Home");
@@ -49,6 +48,7 @@ namespace Auction.Controllers
                     item.LastBet = item.DefaultBet;
                 }
                 ViewBag.Coints = user.Coints;
+                List<Story> story = await db.Stories.Where(t => t.ItemId == id).ToListAsync();
                 ViewBag.Stories = story.Reverse<Story>();
                 return View(item);
             }
@@ -61,7 +61,6 @@ namespace Auction.Controllers
             {
                 User user = await db.Users.FirstOrDefaultAsync(t => t.Login == User.Identity.Name);
                 Item item = await db.Items.FirstOrDefaultAsync(t => t.Id == id);
-                User userLast = await db.Users.FirstOrDefaultAsync(t => t.Login == item.LastUser);
 
                 if (item.DefaultBet >= item.LastBet)
                 {
@@ -80,6 +79,7 @@ namespace Auction.Controllers
                     user.Coints -= item.LastBet + item.Step;
                     if(item.LastBet != item.DefaultBet)
                     {
+                        User userLast = await db.Users.FirstOrDefaultAsync(t => t.Login == item.LastUser);
                         userLast.Coints += item.LastBet;
                         item.LastBet = item.LastBet + item.Step;
                         item.LastBetTime = DateTime.Now;
@@ -156,20 +156,17 @@ namespace Auction.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            if (ModelState.IsValid)
+            string pathGroup1 = Request["Group1"];
+            string pathGroup2 = Request["Group2"];
+            if (pathGroup1 != "")
             {
-                string pathGroup1 = Request["Group1"];
-                string pathGroup2 = Request["Group2"];
-                if (pathGroup1 != "")
-                {
-                    await RegisterAll(pathGroup1, "Группа 1");
-                    ViewBag.RegisterSuccess = true;
-                }
-                if (pathGroup2 != "")
-                {
-                    await RegisterAll(pathGroup2, "Группа 2");
-                    ViewBag.RegisterSuccess = true;
-                }
+                await RegisterAll(pathGroup1, "Группа 1");
+                ViewBag.RegisterSuccess = true;
+            }
+            if (pathGroup2 != "")
+            {
+                await RegisterAll(pathGroup2, "Группа 2");
+                ViewBag.RegisterSuccess = true;
             }
             return View();
         }
