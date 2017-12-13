@@ -209,15 +209,15 @@ namespace Auction.Controllers
             return View();
         }
 
-        private async Task RegisterAll(string Path, string GroupName)
+        public async Task RegisterAll(string Path, string GroupName)
         {
             string[] Group = System.IO.File.ReadAllLines(AppDomain.CurrentDomain.BaseDirectory.ToString() + Path);
             foreach (string str in Group)
             {
                 string[] text = str.Split(':');
+                string[] email = text[0].Split('\\');
                 using (AuctionContext db = new AuctionContext())
                 {
-                    string[] email = text[0].Split('\\');
                     db.Users.Add(new User { Login = text[0], Email = email[1] + "@deltacredit.ru", Group = GroupName, Coints = Convert.ToInt32(text[1]) });
                     await db.SaveChangesAsync();
                 }
