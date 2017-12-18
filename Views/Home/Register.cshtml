@@ -10,14 +10,14 @@
 <!-- Main -->
 <div id="main">
     <div class="inner">
-        <header style="text-align: center;">
+        <header class="text-center">
             <h1>Большая #PROКАЧКА</h1>
-            <h3>Регистрация</h3>
+            <h2>Регистрация</h2>
         </header>
-        <div style="width: 50%; margin: 0 auto; text-align: center;">
-            <h3>Пользователи зарегистрированы</h3>
+        <div class="wrap">
             @if (ViewBag.RegisterSuccess == true)
             {
+                <h3>Пользователи зарегистрированы</h3>
                 <a href="/Home/SendRegistrationMessage" class="button special">Перейти к отправке сообщений пользователям</a>
             }
             else
@@ -32,11 +32,12 @@
                 {
                     <input type="hidden" name="Group1" id="Group1" value="" />
                     <input type="hidden" name="Group2" id="Group2" value="" />
-                    <div style="margin-top: 8%; text-align: center;">
+                    <div class="btn">
                         <input type="submit" class="button special" value="Зарегистрировать" />
                     </div>
                 }
             }
+            <a href="/Home/AdminPanel" class="button special">Перейти в Админ Панель</a>
         </div>
     </div>
 </div>
@@ -54,7 +55,7 @@
 
                 $.ajax({
                     type: "POST",
-                    url: '@Url.Action("UploadGroup", "Account")',
+                    url: '@Url.Action("UploadGroup", "Home")',
                     contentType: false,
                     processData: false,
                     data: data,
@@ -84,7 +85,7 @@
 
                 $.ajax({
                     type: "POST",
-                    url: '@Url.Action("UploadGroup", "Account")',
+                    url: '@Url.Action("UploadGroup", "Home")',
                     contentType: false,
                     processData: false,
                     data: data,

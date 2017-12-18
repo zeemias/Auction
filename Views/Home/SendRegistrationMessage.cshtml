@@ -12,24 +12,28 @@
     <div class="inner">
         @if (ViewBag.SendSuccess == true)
         {
-            <header style="text-align: center;">
+            <header class="text-center">
                 <h1>Большая #PROКАЧКА</h1>
                 <h2>Сообщения отправлены</h2>
             </header>
+            <div class="wrap">
+                <a href="/Home/AdminPanel" class="button special">Перейти в Админ Панель</a>
+            </div>
         }
         else
         {
-            <header style="text-align: center;">
+            <header class="text-center">
                 <h1>Аукцион ДельтаКредит</h1>
-                <h3>Отправка сообщений о регистрации</h3>
+                <h2>Отправка сообщений о регистрации</h2>
             </header>
-            <div style="width: 50%; margin: 0 auto; text-align: center;">
+            <div class="wrap">
                 @using (Html.BeginForm("SendRegistrationMessage", "Home", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
                 {
-                    <div style="margin-top: 8%;">
+                    <div class="btn">
                         <button type="submit" class="button special">Отправить информацию пользователям</button>
                     </div>
                 }
+                <a href="/Home/AdminPanel" class="button special">Перейти в Админ Панель</a>
             </div>
         }   
     </div>

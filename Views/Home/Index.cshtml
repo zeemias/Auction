@@ -1,4 +1,5 @@
-﻿<!-- Header -->
+﻿@using Auction.Models
+<!-- Header -->
 <header id="header">
     <div class="inner">
         <!-- Logo -->
@@ -6,16 +7,21 @@
             <img src="/Content/images/logo.png" alt="" />
         </a>
         <!-- Nav -->
-        <nav>@User.Identity.Name<br/>Баланс: @ViewBag.Coints<span class="icon fa-btc"></span></nav>
+        <nav>@User.Identity.Name<br/>Баланс: @ViewBag.Coints<span class="icon fa-btc">
+         @if (User.Identity.Name == AppSettings.AdminName)
+         {
+             <br/><a href="/Home/AdminPanel">Админ Панель</a>
+         }
+         </span></nav>
     </div>
 </header>
 
 <!-- Main -->
 <div id="main">
     <div class="inner">
-        <header style="text-align: center;">
+        <header class="text-center">
             <h1>Аукцион #ProКачка</h1>
-            <h3 style="color:black;">До конца Большой #ProКачки осталось:</h3>
+            <h2>До конца Большой #ProКачки осталось:</h2>
             <script src="http://megatimer.ru/s/a11003fdf036516ac368e7824d9c07e7.js"></script>
         </header>
         <section class="tiles">

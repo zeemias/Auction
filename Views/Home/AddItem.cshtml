@@ -11,28 +11,44 @@
 <!-- Main -->
 <div id="main"> 
     <div class="inner">
-        <header style="text-align: center;">
+        <header class="text-center">
             <h1>Большая #PROКАЧКА</h1>
-            <h3>Добавление лота</h3>
+            <h2>Добавление лота</h2>
         </header>
-        <div style="width: 50%; margin: 0 auto; text-align: center;">
-            <img src="/Content/images/logo.jpg" width="50%" id="photo">
-            <input type="file" name="upload" id="upload" /><br/>
-            <button id="submit" class="button special">Загрузить фото</button>
-            @using (Html.BeginForm("AddItem", "Home", FormMethod.Post, new { @class = "form-horizontal", role = "form", style="margin-top:2%;" }))
+        <div class="wrap">
+            @if (ViewBag.AddSuccess == true)
             {
-                @Html.HiddenFor(m => m.Image)
-                @Html.TextBoxFor(m => m.Name, new { @class = "form-control", placeholder = "Название" })
-                @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
-                @Html.TextAreaFor(m => m.Description, new { @class = "form-control", placeholder = "Описание" })
-                @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger" })
-                @Html.TextBoxFor(m => m.DefaultBet, new { @class = "form-control", placeholder = "Ставка по умолчанию" })
-                @Html.ValidationMessageFor(m => m.DefaultBet, "", new { @class = "text-danger" })
-                @Html.TextBoxFor(m => m.Step, new { @class = "form-control", placeholder = "Шаг ставки" })
-                @Html.ValidationMessageFor(m => m.Step, "", new { @class = "text-danger" })
-                @Html.TextBoxFor(m => m.TimeOut, new { @class = "form-control", placeholder = "Дата и время завершения (дд.мм.гггг чч:мм)" })
-                @Html.ValidationMessageFor(m => m.TimeOut, "", new { @class = "text-danger" })
-                @Html.DropDownListFor(m => m.Group, new SelectList(
+                <h3>Лот добавлен</h3>
+                <a href="/Home/AddItem" class="button special">Добавить еще один лот</a>
+            }
+            else
+            {
+                <img src="/Content/images/logo.jpg" width="50%" id="photo">
+                <input type="file" name="upload" id="upload" /><br />
+                <button id="submit" class="button special">Загрузить фото</button>
+                using (Html.BeginForm("AddItem", "Home", FormMethod.Post, new { @class = "form-horizontal", role = "form", style = "margin-top:2%;" }))
+                {
+                    @Html.HiddenFor(m => m.Image)
+                    @Html.TextBoxFor(m => m.Name, new { @class = "form-control", placeholder = "Название" })
+                    @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+                    @Html.TextAreaFor(m => m.Description, new { @class = "form-control", placeholder = "Описание", rows = "4" })
+                    @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger" })
+                    @Html.TextBoxFor(m => m.DefaultBet, new { @class = "form-control", placeholder = "Ставка по умолчанию" })
+                    @Html.ValidationMessageFor(m => m.DefaultBet, "", new { @class = "text-danger" })
+                    @Html.TextBoxFor(m => m.Step, new { @class = "form-control", placeholder = "Шаг ставки" })
+                    @Html.ValidationMessageFor(m => m.Step, "", new { @class = "text-danger" })
+                    @Html.DropDownListFor(m => m.Reload, new SelectList(
+                          new List<Object>{
+                               new { value = "false" , text = "До конца аукциона" },
+                               new { value = "true" , text = "Обновлять каждый час" }
+                            },
+                          "value",
+                        "text"), new { @class = "form-control" })
+                    @Html.TextBoxFor(m => m.Quantity, new { @class = "form-control", placeholder = "Количество" })
+                    @Html.ValidationMessageFor(m => m.Quantity, "", new { @class = "text-danger" })
+                    @Html.TextBoxFor(m => m.TimeOut, new { @class = "form-control", placeholder = "Дата и время завершения (дд.мм.гггг чч:мм)" })
+                    @Html.ValidationMessageFor(m => m.TimeOut, "", new { @class = "text-danger" })
+                    @Html.DropDownListFor(m => m.Group, new SelectList(
                           new List<Object>{
                                new { value = "Группа 1" , text = "Группа 1" },
                                new { value = "Группа 2" , text = "Группа 2" },
@@ -40,10 +56,12 @@
                             },
                           "value",
                         "text"), new { @class = "form-control" })
-                <div style="margin-top: 8%; text-align: center;">
-                    <input type="submit" class="button special" value="Добавить" />
-                </div>
+                    <div style="margin-top: 8%; text-align: center;">
+                        <input type="submit" class="button special" value="Добавить" />
+                    </div>
+                }
             }
+            <a href="/Home/AdminPanel" class="button special">Перейти в Админ Панель</a>
         </div>
     </div>
 </div>

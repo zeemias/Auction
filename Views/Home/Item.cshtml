@@ -1,4 +1,5 @@
-﻿@model Auction.Models.Item
+﻿@using Auction.Models
+@model Auction.Models.Item
 <!-- Header -->
 <header id="header">
     <div class="inner">
@@ -7,14 +8,21 @@
             <img src="/Content/images/logo.png" alt="" />
         </a>
         <!-- Nav -->
-        <nav>@User.Identity.Name<br />Баланс: @ViewBag.Coints<span class="icon fa-btc"></span></nav>
+        <nav>
+            @User.Identity.Name<br />Баланс: @ViewBag.Coints<span class="icon fa-btc">
+                @if (User.Identity.Name == AppSettings.AdminName)
+                {
+                    <br /><a href="/Home/AdminPanel">Админ Панель</a>
+                }
+            </span>
+        </nav>
     </div>
 </header>
 
 <div id="modal_form">
     <!-- Сaмo oкнo -->
     <h1>История ставок</h1>
-    <textarea rows="8" style="resize: none; border-style:none;" disabled>
+    <textarea rows="8" disabled>
        @foreach(var story in ViewBag.Stories)
        {
            string st = story.Time + " - " + story.User + " - " + story.NewBet + "\n";
@@ -26,22 +34,22 @@
 
 <!-- Main -->
 <div id="main">
-    <div class="inner" style="text-align: center;">
+    <div class="inner text-center">
         <h1>@Model.Name</h1>
-        <div class="" style="display: inline-block; width: 100%;">
-            <div class="" style="width: 60%; float: left;">
+        <div class="lot">
+            <div class="end">
                 <span class="image main">
                     <img src="@Model.Image" alt="" />
-                    <h3>До конца аукциона осталось:</h3>
-                    <script src="http://megatimer.ru/s/ed67c6f0fab237c3ca2b7335c90a68b2.js"></script>
+                    <h2>До конца аукциона осталось:</h2>
+                    <script src="@Model.Timer"></script>
                 </span>
             </div>
-            <div class="" style="width: 30%; float: right; margin-top: 2%; margin-right:2%;" id="bet">
+            <div id="bet">
                 <h2>Текущая ставка:</h2>
                 @if (Model.DefaultBet < Model.LastBet)
                 {
-                    <h4 style="color: black;">@Model.LastUser</h4>
-                    <h4 style="color: black;">@Model.LastBetTime</h4>
+                    <h4>@Model.LastUser</h4>
+                    <h4>@Model.LastBetTime</h4>
                 }
                 <h1>@Model.LastBet <span class="icon fa-btc"></span></h1>
                 <h2>Шаг ставки:</h2>
@@ -50,10 +58,14 @@
                 {
                     <input name="id" type="hidden" value="@Model.Id"/>
                     <input name="lastBet" type="hidden" value="@Model.LastBet" />
-                    if (Model.TimeOut < DateTime.Now)
+                    if (Model.TimeOut < DateTime.Now || Model.Quantity == 0)
                     {
                         <div class="completed"></div>
                         <button class="button special" disabled>Аукцион завершен</button>
+                    }
+                    else if (ViewBag.Winner == true)
+                    {
+                        <button type="submit" class="button special" disabled>Повысить ставку</button>
                     }
                     else if (Model.LastUser == User.Identity.Name)
                     {
@@ -67,11 +79,11 @@
                     {
                         <button class="button special" disabled>Недостаточно монет</button>
                     }
-                    <h4 style="color: black; cursor:pointer; margin-top: 2%;" id="history">История ставок</h4>
+                    <h4 id="history">История ставок</h4>
                 }
             </div>
         </div>
-        <p style="text-align:justify;">@Model.Description</p>
+        <p>@Model.Description</p>
     </div>
 </div>
 
@@ -96,7 +108,6 @@
             function () { 
                 $(this).css('display', 'none'); 
                 $('#overlay').fadeOut(400); 
-            }
-            );
+            });
     });
 </script>

@@ -11,5 +11,6 @@ namespace Auction.Models
         public DbSet<User> Users { get; set; }
         public DbSet<Item> Items { get; set; }
         public DbSet<Story> Stories { get; set; }
+        public DbSet<Winner> Winners { get; set; }
     }
 }

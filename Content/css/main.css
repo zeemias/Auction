@@ -3433,3 +3433,81 @@ nav{
     background-image:url(/Content/images/Image1.png);
     background-size: cover;
 }
+
+h2{
+    color: black;
+}
+
+textarea {
+    resize: none;
+}
+
+#modal_form textarea {
+    border-style:none;
+}
+
+@media screen and (max-width: 1500px) {
+    #header nav {
+        position: absolute;
+    }
+}
+
+.wrap {
+    width: 50%;
+    margin: 2% auto; 
+    text-align: center;
+}
+
+#bet {
+    width: 30%; 
+    float: right; 
+    margin-top: 2%; 
+    margin-right:2%;
+}
+
+.end {
+    width: 60%; 
+    float: left;
+}
+
+.lot {
+    display: inline-block; 
+    width: 100%;
+}
+
+#main p {
+    text-align:justify;
+}
+
+#history {
+    color: black; 
+    cursor:pointer; 
+    margin-top: 2%;
+}
+
+#bet h4 {
+    color: black;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.btn {
+    margin-top: 8%;
+    text-align: center;
+}
+
+.content h2{
+    color: white;
+}
+
+.panel {
+    width: 100%; 
+    text-align: center; 
+    margin-top: 40px;
+}
+
+.mb {
+    margin-bottom: 11%;
+}
