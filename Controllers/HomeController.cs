@@ -34,14 +34,14 @@ namespace Auction.Controllers
                     //Если пользователь найден, то получаем количество его монет 
                     ViewBag.Coints = user.Coints;
                     //Получаем доступные для его группы товары
-                    ViewBag.Items = db.Items.Where(t => t.Group == user.Group || t.Group == "Общая").ToList();
+                    ViewBag.Items = db.Items.Where(t => t.Group == user.Group || t.Group == "Общая").OrderByDescending(t => t.LastBet).ToList();
                 }
             }
             return View();
         }
 
         //Страница товара аукциона
-        public ActionResult Item(int id = 1)
+        public ActionResult Item(int id = 9)
         {
             lock(_padLock)
             using (AuctionContext db = new AuctionContext())
