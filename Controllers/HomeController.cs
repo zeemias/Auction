@@ -102,7 +102,7 @@ namespace Auction.Controllers
                 //Получаем товар, на который он хочет повысить ставку
                 Models.Item item = db.Items.FirstOrDefault(t => t.Id == id);
 
-                if (item.TimeOut < DateTime.Now || item.Quantity == 0)
+                if (item.TimeOut <= DateTime.Now || item.Quantity == 0)
                 {
                     //Если текущая дата больше даты конца аукциона или количество товара равно 0, то аукцион завершен
                     ViewBag.Error = "Аукцион завершен!";

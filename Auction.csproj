@@ -190,8 +190,6 @@
     <Content Include="Content\css\ie9.css" />
     <Content Include="Content\css\main.css" />
     <Content Include="Content\images\iphone.png" />
-    <Content Include="Content\images\2hq.jpeg" />
-    <Content Include="Content\images\5hq.jpeg" />
     <Content Include="Content\images\alarm.jpg" />
     <Content Include="Content\images\band.jpg" />
     <Content Include="Content\images\black.jpg" />
@@ -207,7 +205,6 @@
     <Content Include="Content\images\monopod.jpg" />
     <Content Include="Content\images\power.jpg" />
     <Content Include="Content\images\power2.jpg" />
-    <Content Include="Content\images\q.png" />
     <Content Include="Content\images\quantie.jpg" />
     <Content Include="Content\images\ritmix.jpg" />
     <Content Include="Content\images\scale.jpg" />

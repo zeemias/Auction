@@ -10,6 +10,8 @@ using System.Threading;
 using Auction.Models;
 using System.Threading.Tasks;
 using System.Data.Entity;
+using Exchange = Microsoft.Exchange.WebServices.Data;
+using System.Net;
 
 namespace Auction
 {
@@ -68,11 +70,11 @@ namespace Auction
             using (AuctionContext db = new AuctionContext())
             {
                 //Получаем список товаров, которые должны обновляться каждый час
-                List<Item> items = db.Items.Where(t => t.Reload == "true").ToList();
-                if(items.Count != 0)
+                List<Item> tItems = db.Items.Where(t => t.Reload == "true").ToList();
+                if(tItems.Count != 0)
                 {
                     //Если такие товары есть, обновляем их
-                    foreach (var item in items)
+                    foreach (var item in tItems)
                     {
                         if (item.TimeOut <= DateTime.Now)
                         {
@@ -88,7 +90,12 @@ namespace Auction
                             //Устанавливаем пользователя сделавшего последнюю ставку
                             item.LastUser = "Empty";
                             //Добавляем победителя
-                            db.Winners.Add(new Winner { ItemId = item.Id, ItemName = item.Name, User = item.LastUser });
+                            Winner win = new Winner() { ItemId = item.Id, ItemName = item.Name, User = item.LastUser };
+                            db.Winners.Add(win);
+                            //Получаем его Email
+                            string Email = db.Users.FirstOrDefault(t => t.Login == win.User).Email;
+                            //Отправляем сообщение победителю
+                            SendEmail(Email, item.Name);
                         }
                         else
                         {
@@ -100,22 +107,46 @@ namespace Auction
                     }
                     //Сохраняем изменения
                     db.SaveChanges();
-                }/*
+                }
                 if (AppSettings.End <= DateTime.Now)
                 {
-                    List<Item> Allitems = db.Items.Where(t => t.Reload == "false").ToList();
-                    if (items.Count != 0)
+                    List<Item> fItems = db.Items.Where(t => t.Reload == "false").ToList();
+                    List<Winner> winners = db.Winners.ToList();
+                    if (fItems.Count != 0)
                     {
-                        foreach (var item in items)
+                        foreach (var item in fItems)
                         {
-                            if (item.TimeOut <= DateTime.Now)
+                            if(!winners.Any(t => t.ItemId == item.Id))
                             {
-                                Winner win = db.
+                                //Добавляем победителя
+                                Winner win = new Winner() { ItemId = item.Id, ItemName = item.Name, User = item.LastUser };
+                                db.Winners.Add(win);
+                                //Получаем его Email
+                                string Email = db.Users.FirstOrDefault(t => t.Login == win.User).Email;
+                                //Отправляем сообщение победителю
+                                SendEmail(Email, item.Name);
                             }
                         }
+                        db.SaveChanges();
                     }
-                }*/
+                }
             }
+        }
+
+        //Функция отправки сообщений на Email
+        public static Task SendEmail(string GetEmail, string itemName)
+        {
+            return Task.Run(() =>
+            {
+                Exchange.ExchangeService service = new Exchange.ExchangeService();
+                service.Credentials = new NetworkCredential(AppSettings.SendEmail, AppSettings.SendEmailPassword);
+                service.AutodiscoverUrl(AppSettings.SendEmail);
+                Exchange.EmailMessage emailMessage = new Exchange.EmailMessage(service);
+                emailMessage.Subject = "Аукцион #ProКачка - Вы выиграли приз!";
+                emailMessage.Body = new Exchange.MessageBody("Поздравляем, вы выиграли " + itemName + " на нашем аукционе #ProКачка.");
+                emailMessage.ToRecipients.Add(GetEmail);
+                emailMessage.Send();
+            });
         }
     }
 }
