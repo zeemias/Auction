@@ -41,7 +41,7 @@ namespace Auction.Controllers
         }
 
         //Страница товара аукциона
-        public ActionResult Item(int id = 9)
+        public ActionResult Item(int id = 65)
         {
             lock(_padLock)
             using (AuctionContext db = new AuctionContext())
